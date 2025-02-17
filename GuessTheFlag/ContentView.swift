@@ -18,6 +18,9 @@ struct ContentView: View {
     // this properties will be set when a flag is tapped
     @State private var showingScore = false
     @State private var scoreTitle = ""
+    @State private var score = 0
+    @State private var isGameOver = false
+    @State private var attempts = 0
     
     var body: some View {
         ZStack {
@@ -64,7 +67,7 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                Text("Score: ???")
+                Text("Score: \(score)")
                     .font(.title.bold())
                     .foregroundStyle(.white)
                 
@@ -75,22 +78,40 @@ struct ContentView: View {
         .alert(scoreTitle, isPresented: $showingScore) {
             Button("OK", action: askQuestion)
         } message: {
-            Text("Your score is ???")
+            Text("Your score is \(score)")
+        }
+        .alert("Game Over!", isPresented: $isGameOver) {
+            Button("Play again", action: restartGame)
+        } message: {
+            Text("Your final score is \(score).")
         }
     }
     
     func flagTapped(_ number: Int) {
         if number == correctAnswer {
             scoreTitle = "Correct"
+            score += 1
+            attempts += 1
         } else {
-            scoreTitle = "Wrong"
+            scoreTitle = "Wrong! That’s the flag of \(countries[number])"
+            attempts += 1
         }
+        
         showingScore = true
+        
+        if attempts == 8 {
+            isGameOver = true
+        }
     }
     
     func askQuestion() {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+    }
+    
+    func restartGame() {
+        score = 0
+        attempts = 0
     }
 }
 
