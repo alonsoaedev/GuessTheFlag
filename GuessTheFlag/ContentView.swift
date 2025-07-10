@@ -31,6 +31,9 @@ struct ContentView: View {
     @State private var isGameOver = false
     @State private var attempts = 0
     
+    @State private var tappedFlag = 0
+    @State private var animationAmount = 1.0
+    
     var body: some View {
         ZStack {
             RadialGradient(
@@ -65,6 +68,14 @@ struct ContentView: View {
                         } label: {
                             ImageFlag(country: countries[number])
                         }
+                        .rotation3DEffect(
+                            .degrees(
+                                number == tappedFlag && number == correctAnswer
+                                ? animationAmount
+                                : 0
+                            ),
+                            axis: (x: 0, y: 1, z: 0)
+                        )
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -95,6 +106,10 @@ struct ContentView: View {
     }
     
     func flagTapped(_ number: Int) {
+        tappedFlag = number
+        withAnimation() {
+            animationAmount += 360
+        }
         if number == correctAnswer {
             scoreTitle = "Correct"
             score += 1
