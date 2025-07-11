@@ -31,6 +31,7 @@ struct ContentView: View {
     @State private var isGameOver = false
     @State private var attempts = 0
     
+    @State private var scale = 1.0
     @State private var opacity = 1.0
     @State private var tappedFlag = 0
     @State private var animationAmount = 1.0
@@ -78,6 +79,7 @@ struct ContentView: View {
                             axis: (x: 0, y: 1, z: 0)
                         )
                         .opacity(number != correctAnswer ? opacity : 1)
+                        .scaleEffect(number != correctAnswer ? scale : 1)
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -112,6 +114,7 @@ struct ContentView: View {
         withAnimation() {
             animationAmount += 360
             opacity = 0.25
+            scale = 0.75
         }
         if number == correctAnswer {
             scoreTitle = "Correct"
@@ -133,6 +136,7 @@ struct ContentView: View {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
         opacity = 1
+        scale = 1
     }
     
     func restartGame() {
